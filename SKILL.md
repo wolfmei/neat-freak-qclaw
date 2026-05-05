@@ -33,6 +33,8 @@ description: >
 
 Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 
+> ⚠️ **防混规则**：`MEMORY.md`（workspace 根目录）和 `~/self-improving/memory.md` 是两个完全不同的文件。前者是你的长期记忆，后者是 self-improving 的 HOT 规则层。执行任何修改前，必须先确认目标文件的完整路径，绝不能只看文件名就动手。
+
 ### 系统一：Workspace 知识体系
 
 | 层级 | 文件 | 受众 | 职责 | 不同步的代价 |
@@ -68,8 +70,8 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 
 **先做 ls，再做判断。**
 
-1. 读 workspace 根目录下所有核心文件：
-   - `MEMORY.md`
+1. 读 workspace 根目录下所有核心文件（**读取时用完整绝对路径，不要简写**）：
+   - `<workspace>/MEMORY.md` — **不是** `~/self-improving/memory.md`
    - `SOUL.md`、`IDENTITY.md`
    - `AGENTS.md`、`USER.md`、`TOOLS.md`
    - `HEARTBEAT.md`（如有）
@@ -77,9 +79,9 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 3. 读今天和昨天的 `memory/YYYY-MM-DD.md`
 4. 扫描 task-summary 文件：`ls task-summary_*.md 2>/dev/null`
 5. LCM 审查：`lcm_grep` 搜索本次对话涉及的关键实体，检查 compacted summary 中是否有过期信息
-6. **self-improving 审查**：
+6. **self-improving 审查**（**所有路径以 `~/self-improving/` 开头，不要与 workspace 的 `memory/` 混淆**）：
    - 检测 `~/self-improving/` 是否存在
-   - 存在 → 读 `memory.md`、`corrections.md`、`index.md`
+   - 存在 → 读 `~/self-improving/memory.md`（HOT 规则）、`~/self-improving/corrections.md`、`~/self-improving/index.md`
    - `ls ~/self-improving/projects/` 和 `~/self-improving/domains/`
    - 检查 `index.md` 行数统计是否与实际一致
 7. 回顾本次对话全部内容
@@ -121,7 +123,9 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 
 **必须真的改文件，不是描述"我会怎么改"。**
 
-**顺序**：先 `memory/today.md`（追加当日记录）→ 再 `MEMORY.md`（合并/修正长期记忆）→ 再 `self-improving/`（如存在）→ 最后检查其他文件。
+**顺序**：先 `<workspace>/memory/today.md`（追加当日记录）→ 再 `<workspace>/MEMORY.md`（合并/修正长期记忆）→ 再 `~/self-improving/`（如存在）→ 最后检查其他文件。
+
+> ⚠️ **修改前必做路径确认**：写文件前，在内部清单中明确标注完整路径。`MEMORY.md` = workspace 长期记忆；`~/self-improving/memory.md` = self-improving HOT 规则。搞混了就是 bug。
 
 **编辑原则**：
 
