@@ -54,11 +54,7 @@
 git clone https://github.com/wolfmei/neat-freak-qclaw.git ~/.qclaw/skills/neat-freak
 ```
 
-### 方式三：SkillHub
 
-```
-skillhub install neat-freak-qclaw
-```
 
 ## 使用
 
