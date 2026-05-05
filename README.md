@@ -44,14 +44,14 @@
 ### 方式一：让 Agent 安装
 
 ```
-帮我安装这个 skill：https://github.com/<USER>/neat-freak-qclaw
+帮我安装这个 skill：https://github.com/wolfmei/neat-freak-qclaw
 ```
 
 ### 方式二：手动安装
 
 ```bash
 # 克隆到 QClaw skills 目录
-git clone https://github.com/<USER>/neat-freak-qclaw.git ~/.qclaw/skills/neat-freak
+git clone https://github.com/wolfmei/neat-freak-qclaw.git ~/.qclaw/skills/neat-freak
 ```
 
 ### 方式三：SkillHub
