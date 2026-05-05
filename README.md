@@ -83,25 +83,27 @@ cron → isolated agentTurn → "执行 /neat 全量审查"
 ## 🧹 同步完成
 
 ### 记忆变更
-- 更新：LLM-WIKI 项目状态从"开发中"改为"已部署"（2026-05-05 确认上线）
-- 新增：self-improving 手动触发规则
-- 删除：临时调试方案（已完成，不再需要）
+- 更新：HomeDash 项目状态从"调研中"改为"已上线"（2026-04-12 部署完成）
+- 新增：用户偏好——回复用中文，代码注释用英文
+- 删除：旧版 API 对接方案（已废弃，改用 webhook）
+- 合并：3 条关于 HomeDash 的零散记录 → 1 条完整项目条目
 
 ### 文档变更
-- MEMORY.md — 项目状态更新 + 覆写 LCM 过期摘要
-- memory/2026-05-05.md — 追加当日决策记录
-- USER.md — 无变更
+- MEMORY.md — 项目状态更新 + 合并重复条目 + 覆写 LCM 过期摘要
+- memory/2026-04-12.md — 追加当日决策记录（选 webhook 而非轮询的理由）
+- USER.md — 新增语言偏好
 
 ### self-improving 变更
-- memory.md — 与 MEMORY.md 去重：LLM-WIKI 规则保留在 memory.md，MEMORY.md 中删除重复条目
-- index.md — 行数更新（0→13, 0→26）
+- memory.md — 与 MEMORY.md 去重："回复用中文"规则保留在 memory.md，MEMORY.md 中删除重复条目
+- corrections.md — 新增 1 条：误用 v1 API 端点 → 应使用 v2
+- index.md — 行数更新（12→14, 24→26）
 
 ### LCM 覆写
-- ⚠️ LCM 摘要中"session-sweeper"相关描述已过期，已在 MEMORY.md 中覆写
+- ⚠️ LCM 摘要中"HomeDash 使用轮询方案"已过期，实际已改为 webhook，已在 MEMORY.md 中覆写
 
 ### task-summary 清理
-- 归档：2 个文件（7-30天）
-- 删除：1 个文件（>30天，已蒸馏）
+- 归档：2 个文件（7-30天）→ memory/archive/
+- 删除：1 个文件（>30天，已蒸馏到 MEMORY.md）
 
 ### 未处理
 - 无
