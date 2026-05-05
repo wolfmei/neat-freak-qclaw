@@ -6,90 +6,78 @@
 
 | 本次对话发生的事 | 要改的文件 |
 |---|---|
-| 新增/修改用户偏好 | `USER.md` + `self-improving/memory.md` |
-| 做出重要决策 | `MEMORY.md`（决策+理由）+ `memory/today.md`（决策过程） |
-| 踩坑/教训 | `self-improving/corrections.md`（详细过程）+ `MEMORY.md`（精炼结论） |
-| 项目状态变化（启动/暂停/完成） | `MEMORY.md`（项目条目更新）+ `memory/today.md` |
-| 工具/技能配置变化 | `TOOLS.md` + `MEMORY.md`（如有隐性知识） |
-| 人格/风格调整 | `SOUL.md` + `IDENTITY.md` |
-| 新增定期任务（cron） | `MEMORY.md`（任务条目）+ `memory/today.md` |
-| 发现有过期信息 | `MEMORY.md`（修正或删除）+ 检查 daily notes |
-| LCM 中有过期摘要 | `MEMORY.md`（覆写条目：⚠️ LLM 中 xxx 已过期，实际为 yyy） |
-| 发现行为规则 | `self-improving/memory.md`（HOT 规则）+ `MEMORY.md`（如影响全局认知） |
-| 跨项目/跨 workspace 改动 | 涉及的所有 workspace 的 MEMORY.md + daily notes |
+| 新增/修改用户偏好 | \`USER.md\`（memory tool: replace） |
+| 做出重要决策 | \`MEMORY.md\`（memory tool: replace/add） |
+| 踩坑/教训 | \`MEMORY.md\`（精炼结论，replace 已有条目腾空间） |
+| 项目状态变化（启动/暂停/完成） | \`MEMORY.md\`（replace 项目条目） |
+| 工具/技能配置变化 | \`MEMORY.md\`（如有隐性知识） |
+| 人格/风格调整 | \`SOUL.md\` |
+| 新增定期任务（cron） | \`MEMORY.md\`（如需记住任务存在） |
+| 发现有过期信息 | \`MEMORY.md\`（replace 过期条目） |
+| 会话搜索中发现过期信息 | \`MEMORY.md\`（replace 覆写过期条目） |
+| 发现行为规则 | \`MEMORY.md\`（如果空间允许） |
+| 子目录上下文需要更新 | 对应子目录的 \`AGENTS.md\` |
 
 ## 记忆层变更
 
 | 情况 | 处理方式 |
 |---|---|
-| 过期事实 | 改 MEMORY.md 条目，删除旧内容 |
-| 相对时间（"今天"、"最近"） | 全部转绝对日期（`2026-05-05` 而非"今天"） |
-| 重复记录（多条说同一件事） | 合并为一条 |
-| 已完成的待办 | 删除——知识库不是历史档案 |
-| 推翻的决策 | 删除旧条目，留新决策 |
-| 跨会话只用一次的临时上下文 | 删除 |
-| LCM 中的过期摘要 | MEMORY.md 中写覆写条目，不可编辑 LCM 本身 |
+| 过期事实 | replace MEMORY.md 条目 |
+| 相对时间（"今天"、"最近"） | 全部转绝对日期 |
+| 重复记录（多条说同一件事） | 合并为一条，腾出容量 |
+| 已完成的待办 | remove——知识库不是历史档案 |
+| 推翻的决策 | replace 旧条目 |
+| 跨会话只用一次的临时上下文 | remove |
+| 容量不足 | 先合并/删除低价值条目，再 add 新条目 |
 
-## self-improving 与 Workspace 知识体系的交叉规则
+## 容量管理策略
 
-### 什么放 self-improving，什么放 MEMORY.md
+MEMORY.md (2,200 chars) 和 USER.md (1,375 chars) 有硬性字符上限。
 
-| 内容类型 | 放 self-improving | 放 MEMORY.md | 原因 |
-|---|---|---|---|
-| 行为规则（"总是做 X"） | ✅ memory.md (HOT) | 仅概要 | memory.md 是规则引擎的正式存储 |
-| 用户偏好（"我喜欢 X"） | ✅ memory.md (HOT) | ✅ USER.md | memory.md 存可执行规则，USER.md 存人物画像 |
-| 纠错记录（"参数名写错了"） | ✅ corrections.md | 仅精炼教训 | corrections 记过程细节，MEMORY 记一句话结论 |
-| 事实/决策（"项目 X 暂停了"） | ❌ | ✅ MEMORY.md | 事实不是规则，归 MEMORY.md |
-| 项目状态（"LLM-WIKI 已部署"） | ❌ | ✅ MEMORY.md | 项目概览归 MEMORY.md |
-| 项目/领域级模式 | ✅ projects/ 或 domains/ | ❌ | 按需加载，不污染全局 |
+### 优先级排序（空间不够时先删谁）
 
-### 去重判断
-
-当同一条信息在两套系统中都有时：
-
-1. **规则/偏好** → 保留在 `self-improving/memory.md`，MEMORY.md 中删除或简化为一行引用（"见 self-improving/memory.md"）
-2. **教训** → `corrections.md` 保留完整过程，`MEMORY.md` 保留一句话结论，两边措辞确保一致
-3. **事实** → 保留在 `MEMORY.md`，self-improving 中删除
-
-### 维护检查项
-
-| 检查项 | 条件 | 处理 |
+| 优先级 | 内容类型 | 处理 |
 |---|---|---|
-| memory.md 超 100 行 | 行数 > 100 | 30天未用模式降频到 projects/ 或 domains/ |
-| corrections.md 超 50 条 | 条目 > 50 | 归档最旧的条目 |
-| index.md 统计不准 | 行数与实际不符 | 更新行数和 Last Updated |
-| 重复条目 | 同一信息两处都有 | 按上表去重 |
+| 🔴 最先删 | 一次性临时上下文 | remove |
+| 🔴 最先删 | 已完成的任务记录 | remove |
+| 🟡 合并 | 多条说同一件事 | 合并为一条 |
+| 🟡 合并 | 可用会话搜索回溯的细节 | 只留精炼结论 |
+| 🟢 保留 | 活跃项目状态 | 保留 |
+| 🟢 保留 | 用户偏好 | 保留 |
+| 🟢 保留 | 未解决的教训 | 保留 |
 
-## task-summary 文件生命周期
+### 容量检查流程
 
-| 年龄 | 处理 |
-|---|---|
-| < 7天 | 保留，近期可回溯 |
-| 7-30天 | 关键信息蒸馏到 MEMORY.md，原文件移入 `memory/archive/` |
-| > 30天 | 确认已蒸馏后删除 |
+1. 盘点时统计 MEMORY.md 和 USER.md 当前字符数
+2. 计算剩余容量百分比
+3. 如 > 80% 满，先执行合并/删除腾空间，再写入新条目
+4. 写入时优先用 replace 更新已有条目，而非 add 新条目
 
-## LCM 审查策略
+## 会话搜索审查策略
 
-LCM（Lossless Context Management）的 compacted summary 不可直接编辑，但可能包含过期信息。
+Hermes FTS5 会话搜索可回溯历史对话，替代 LCM 审查。
 
 **审查方法**：
-1. 用 `lcm_grep` 搜索本次对话涉及的关键实体名
-2. 检查返回的摘要内容是否与当前认知一致
-3. 不一致 → MEMORY.md 中写覆写条目
+1. 用 session search 搜索本次对话涉及的关键实体
+2. 检查搜索结果是否与当前认知一致
+3. 不一致 → MEMORY.md 中 replace 对应条目
 
-**覆写条目格式**：
+**覆写条目格式**（MEMORY.md 中的条目写法）：
 ```
-- ⚠️ LCM 覆写：[实体名] — LLM 摘要中描述为"旧描述"，实际为"新描述"（更新于 YYYY-MM-DD）
-```
-
-**批量覆写**：当 LCM 中某项目的描述已全面过期，写一条总覆写：
-```
-- ⚠️ LCM 覆写：[项目名] — LLM 中关于此项目的摘要已全面过期，以本 MEMORY.md 为准
+[实体名] — 实际为"新描述"（更新于 YYYY-MM-DD）
 ```
 
-## Daily Notes 整理原则
+**注意**：Hermes 的 MEMORY.md 不支持标注式覆写（如 QClaw 的"⚠️ LCM 覆写"前缀），直接 replace 旧条目即可。
 
-- `memory/YYYY-MM-DD.md` 是原始日志，**不在里面删改**历史条目
-- 如发现历史 daily note 中有过期信息，在当天 note 末尾追加更正，不回改原文
-- 蒸馏到 MEMORY.md 时，优先从 daily notes 中提取"学到了什么"，而非"做了什么"
-- daily notes 超过 90 天且已蒸馏的，可移入 `memory/archive/`
+## 项目上下文文件整理原则
+
+- \`.hermes.md\` / \`AGENTS.md\` 是项目级指令，不是记忆存储
+- 发现过期项目指令 → 直接编辑对应文件，不需要覆写模式
+- 子目录的 AGENTS.md 在 agent 进入时自动发现，审查时应遍历项目所有子目录
+- 项目上下文超过 20,000 字符会被自动截断（70% 头 + 20% 尾），审查时注意是否超限
+
+## SOUL.md 维护
+
+- SOUL.md 是全局人格文件，只有明确的人格调整才改
+- SOUL.md 在 HERMES_HOME 全局唯一，不按项目隔离
+- 修改 SOUL.md 需要谨慎——影响所有会话

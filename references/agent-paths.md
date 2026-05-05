@@ -1,49 +1,51 @@
-# QClaw / OpenClaw 知识文件路径速查
+# Hermes Agent 知识文件路径速查
 
 执行第一步盘点时按这张表找文件。
 
-## Workspace 知识体系
+## 核心知识文件
 
-| 用途 | 路径 |
-|---|---|
-| Agent 人格 | `<workspace>/SOUL.md` + `<workspace>/IDENTITY.md` |
-| 长期记忆 | `<workspace>/MEMORY.md` |
-| 工作日志 | `<workspace>/memory/YYYY-MM-DD.md` |
-| 日志归档 | `<workspace>/memory/archive/` |
-| 任务摘要 | `<workspace>/task-summary_*.md` |
-| Agent 配置 | `<workspace>/AGENTS.md` |
-| 用户信息 | `<workspace>/USER.md` |
-| 工具备注 | `<workspace>/TOOLS.md` |
-| 心跳任务 | `<workspace>/HEARTBEAT.md` |
+| 用途 | 路径 | 说明 |
+|---|---|---|
+| Agent 人格 | $HERMES_HOME/SOUL.md | 全局唯一，不按项目隔离 |
+| 长期记忆 | ~/.hermes/memories/MEMORY.md | **2200 字符上限**，§ 分隔条目 |
+| 用户画像 | ~/.hermes/memories/USER.md | **1375 字符上限**，§ 分隔条目 |
+| 项目上下文 | <cwd>/.hermes.md 或 AGENTS.md 或 CLAUDE.md | 优先级：.hermes.md > AGENTS.md > CLAUDE.md > .cursorrules |
+| 子目录上下文 | <subdir>/AGENTS.md | 渐进式发现：agent 进入子目录时自动加载 |
 
-`<workspace>` 通常是 `~/.qclaw/workspace-agent-<id>` 或 `~/.openclaw/workspace`。
+`HERMES_HOME` 默认为 `~/.hermes`。
 
-## self-improving 记忆体系
+## 项目上下文优先级
 
-| 用途 | 路径 |
-|---|---|
-| HOT 规则（≤100行） | `~/self-improving/memory.md` |
-| 纠正日志 | `~/self-improving/corrections.md` |
-| 索引文件 | `~/self-improving/index.md` |
-| 项目知识 | `~/self-improving/projects/` |
-| 领域知识 | `~/self-improving/domains/` |
-| 归档 | `~/self-improving/archive/` |
-| 心跳状态 | `~/self-improving/heartbeat-state.md` |
+同一会话只加载一个项目上下文（first match wins）：
+
+1. `.hermes.md` — Hermes 原生，最高优先级
+2. `AGENTS.md` — 通用格式
+3. `CLAUDE.md` — Claude Code 兼容
+4. `.cursorrules` — Cursor IDE 兼容
 
 ## Skills 目录
 
 | 用途 | 路径 |
 |---|---|
-| 用户级 skills | `~/.qclaw/skills/<name>/SKILL.md` |
-| 内置 skills | `~/Library/Application Support/QClaw/openclaw/config/skills/` |
-| Workspace skills | `<workspace>/skills/` |
+| 本地 skills | ~/.hermes/skills/<name>/SKILL.md |
+| 外部 skill 目录 | 配置文件中指定的额外目录 |
 
-## LCM
+Skills 使用 [agentskills.io](https://agentskills.io) 开放标准。
 
-LCM（Lossless Context Management）的 compacted summary 不可直接编辑。审查方式：
+## 会话搜索
 
-- `lcm_grep` — 搜索关键实体
-- `lcm_describe` — 查看特定摘要
-- `lcm_expand_query` — 深度展开摘要内容
+Hermes 内置 FTS5 全文搜索，搜索历史会话内容：
 
-发现过期信息 → 在 MEMORY.md 中写覆写条目。
+- 通过 Hermes 的 session search 工具访问
+- 用于回溯过去的决策和对话细节
+
+发现过期信息 → 在 MEMORY.md 中用 replace 动作覆写对应条目。
+
+## 容量约束（重要）
+
+| 文件 | 字符上限 | 典型条目数 |
+|---|---|---|
+| MEMORY.md | 2,200 chars | 8-15 条 |
+| USER.md | 1,375 chars | 5-10 条 |
+
+**满容时必须合并/替换，不能追加。** 这是 Hermes 的硬约束。
