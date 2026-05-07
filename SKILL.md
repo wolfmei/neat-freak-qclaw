@@ -4,13 +4,15 @@ description: >
   会话收尾知识审查 — 审查并同步 Agent 的知识体系（MEMORY.md、daily notes、
   AGENTS.md、USER.md、task-summary、LCM summaries、self-improving、.learnings/），
   防止知识腐化，让 Agent 越用越聪明。MUST trigger when the user says:
-  "整理一下", "审查一下", "存档", "收尾", "同步一下", "梳理一下",
-  "/neat", "neat", "clean up memory", "sync memory", "tidy up",
-  "这个阶段做完了", "会话结束了", "保存一下",
+  "审查一下", "知识审查", "记忆审查", "存档", "收尾", "同步知识",
+  "梳理记忆", "/neat", "neat", "clean up memory", "sync memory",
+  "知识存档", "这个阶段做完了", "会话结束了", "保存记忆",
+  "neat freak", "洁癖",
   or any phrase suggesting a session wrap-up where knowledge needs
   reconciliation. Also trigger when the user reports stale memories,
   conflicting info, or wants a clean handoff to the next session.
-  Bare "整理" / "tidy" with prior task context counts — do not under-trigger.
+  Do NOT trigger on "整理" alone — that routes to file-skill (file/desktop organization).
+  This skill handles knowledge/memory hygiene, not file organization.
   Adapted for QClaw / OpenClaw from the original neat-freak by 数字生命卡兹克.
 ---
 
