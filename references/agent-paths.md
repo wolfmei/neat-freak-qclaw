@@ -43,6 +43,16 @@
 | 内置 skills | `~/Library/Application Support/QClaw/openclaw/config/skills/` | `%APPDATA%\QClaw\openclaw\config\skills\` |
 | Workspace skills | `<workspace>/skills/` | 同左 |
 
+## .learnings/ 经验日志（SkillHub self-improving-agent）
+
+| 用途 | macOS / Linux | Windows |
+|---|---|---|
+| 经验日志 | `<workspace>/.learnings/LEARNINGS.md` | 同左 |
+| 错误日志 | `<workspace>/.learnings/ERRORS.md` | 同左 |
+| 需求日志 | `<workspace>/.learnings/FEATURE_REQUESTS.md` | 同左 |
+
+此目录由 [SkillHub self-improving-agent](https://clawhub.ai/self-improving-agent) 创建，与 `~/self-improving/` 是完全独立的两个系统。
+
 ## LCM
 
 LCM（Lossless Context Management）的 compacted summary 不可直接编辑。审查方式：

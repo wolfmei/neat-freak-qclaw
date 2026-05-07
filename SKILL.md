@@ -2,7 +2,7 @@
 name: neat-freak
 description: >
   会话收尾知识审查 — 审查并同步 Agent 的知识体系（MEMORY.md、daily notes、
-  AGENTS.md、USER.md、task-summary、LCM summaries、self-improving），
+  AGENTS.md、USER.md、task-summary、LCM summaries、self-improving、.learnings/），
   防止知识腐化，让 Agent 越用越聪明。MUST trigger when the user says:
   "整理一下", "审查一下", "存档", "收尾", "同步一下", "梳理一下",
   "/neat", "neat", "clean up memory", "sync memory", "tidy up",
@@ -18,7 +18,7 @@ description: >
 
 > Original by [数字生命卡兹克](https://github.com/KKKKhazix) · [原版 neat-freak](https://github.com/KKKKhazix/khazix-skills/tree/main/neat-freak) · [原版文章](https://mp.weixin.qq.com/s/tg1wd-iN2gWHWhXdY0faeg)
 >
-> 本版本针对 QClaw / OpenClaw 个人 Agent 场景深度适配，新增 LCM 审查、self-improving 交叉检查、task-summary 生命周期管理。
+> 本版本针对 QClaw / OpenClaw 个人 Agent 场景深度适配，新增 LCM 审查、self-improving 交叉检查、.learnings/ 经验日志审查、task-summary 生命周期管理。
 
 > 你是知识库编辑，不是记录员。记录员只会往后追加，编辑会审查全局、合并重复、修正过期、删除废弃。
 > 你的工作：让 Agent 的知识体系始终保持干净、准确、对新会话友好。
@@ -31,9 +31,12 @@ description: >
 
 ## QClaw 知识体系
 
-Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
+Agent 的知识分布在三套并行系统中，neat-freak 要统一审查：
 
-> ⚠️ **防混规则**：`MEMORY.md`（workspace 根目录）和 `~/self-improving/memory.md` 是两个完全不同的文件。前者是你的长期记忆，后者是 self-improving 的 HOT 规则层。执行任何修改前，必须先确认目标文件的完整路径，绝不能只看文件名就动手。
+> ⚠️ **防混规则**：
+> - `MEMORY.md`（workspace 根目录）和 `~/self-improving/memory.md` 是两个完全不同的文件。前者是你的长期记忆，后者是 self-improving 的 HOT 规则层。
+> - `.learnings/` 是 SkillHub 版 self-improving-agent 的经验日志，和 `~/self-improving/` 是两套独立系统。
+> 执行任何修改前，必须先确认目标文件的完整路径，绝不能只看文件名就动手。
 
 ### 系统一：Workspace 知识体系
 
@@ -52,7 +55,17 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 | **WARM 知识** | `~/self-improving/projects/` + `domains/` | 按需加载的自己 | 项目/领域级模式 | 领域知识丢失 |
 | **COLD 归档** | `~/self-improving/archive/` | 按需查询的自己 | 久未使用的模式 | 无 |
 
-### 两套系统的分工
+### 系统三：.learnings/ 经验日志（SkillHub self-improving-agent）
+
+| 层级 | 文件 | 受众 | 职责 | 不同步的代价 |
+|------|------|------|------|-------------|
+| **经验日志** | `.learnings/LEARNINGS.md` | 跨会话的自己 | 纠正、洞察、知识缺口、最佳实践（结构化 ID） | 重复犯同样的错 |
+| **错误日志** | `.learnings/ERRORS.md` | 回溯的自己 | 命令失败、异常、集成错误 | 同一个坑踩两次 |
+| **需求日志** | `.learnings/FEATURE_REQUESTS.md` | 规划的自己 | 用户请求的能力 | 遗忘用户需求 |
+
+> `.learnings/` 位于 workspace 根目录下，是 [SkillHub self-improving-agent](https://clawhub.ai/self-improving-agent) 的存储目录。与 `~/self-improving/` 是完全独立的两个系统，不要混淆。
+
+### 三套系统的分工
 
 | 内容类型 | 放哪里 | 为什么 |
 |---|---|---|
@@ -61,8 +74,11 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 | 已确认的行为规则 | `self-improving/memory.md` | 这是它的本职，HOT 层自动加载 |
 | 偏好（用户说"我总是..."） | `self-improving/memory.md` + `USER.md` | memory.md 存可执行规则，USER.md 存人物画像 |
 | 项目/领域级模式 | `~/self-improving/projects/` + `domains/` | 按需加载，不污染全局 |
+| 开发经验/错误/需求 | `.learnings/LEARNINGS.md` + `ERRORS.md` + `FEATURE_REQUESTS.md` | 结构化追踪，带生命周期管理 |
 
-**去重原则**：同一条信息在两套系统中都有时，保留在职责更匹配的那一边，另一边删掉或改为交叉引用。
+**去重原则**：同一条信息在多套系统中都有时，保留在职责更匹配的那一边，另一边删掉或改为交叉引用。三套系统之间尤其注意：
+- `~/self-improving/corrections.md` vs `.learnings/LEARNINGS.md`：功能重叠，corrections 偏行为纠错，LEARNINGS 偏开发经验，按内容性质分流
+- `~/self-improving/memory.md` vs `.learnings/LEARNINGS.md`：memory.md 存已晋升的精炼规则，LEARNINGS.md 存待处理的原始经验
 
 ## 执行流程
 
@@ -84,7 +100,13 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
    - 存在 → 读 `~/self-improving/memory.md`（HOT 规则）、`~/self-improving/corrections.md`、`~/self-improving/index.md`
    - `ls ~/self-improving/projects/` 和 `~/self-improving/domains/`
    - 检查 `index.md` 行数统计是否与实际一致
-7. 回顾本次对话全部内容
+7. **.learnings/ 审查**（**路径为 `<workspace>/.learnings/`，不要与 `~/self-improving/` 混淆**）：
+   - 检测 `<workspace>/.learnings/` 是否存在
+   - 存在 → 读 `.learnings/LEARNINGS.md`、`.learnings/ERRORS.md`、`.learnings/FEATURE_REQUESTS.md`
+   - 统计各文件中 pending/in_progress/resolved/promoted 的数量
+   - 找 Recurrence-Count ≥ 3 的条目（应晋升但未晋升）
+   - 找 status=pending 但根据对话上下文实际已解决的条目
+8. 回顾本次对话全部内容
 
 **输出一张文件清单**（内部用），每个文件标「评估过 / 要改 / 不用改」。**漏一个不行**。
 
@@ -117,13 +139,18 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
    - `corrections.md` 中已 FIXED 的条目，其精炼结论是否已存在于 `MEMORY.md`？没有 → 补上
    - `index.md` 的行数统计是否准确？不准确 → 更新
    - `memory.md` 是否超过 100 行限制？超过 → 需要降频（demote WARM）
-3. **两系统一致性**：同一条信息在两处描述不同 → 以更近更新为准，同步另一处
+3. **.learnings/ 交叉检查**：
+   - `.learnings/LEARNINGS.md` 中 status=pending 的条目，是否在本次对话中实际已解决？→ 标记为 resolved
+   - 是否有 Recurrence-Count ≥ 3 但 status 仍为 pending 的条目？→ 应晋升到 CLAUDE.md / AGENTS.md / TOOLS.md / SOUL.md
+   - `.learnings/LEARNINGS.md` 与 `~/self-improving/corrections.md` 是否有重复记录？→ 保留在更合适的一边，另一边加 See Also
+   - `.learnings/ERRORS.md` 中 status=pending 的错误，当前是否已修复？→ 标记为 resolved
+4. **三系统一致性**：同一条信息在多处描述不同 → 以更近更新为准，同步其他处
 
 ### 第三步：实际修改
 
 **必须真的改文件，不是描述"我会怎么改"。**
 
-**顺序**：先 `<workspace>/memory/today.md`（追加当日记录）→ 再 `<workspace>/MEMORY.md`（合并/修正长期记忆）→ 再 `~/self-improving/`（如存在）→ 最后检查其他文件。
+**顺序**：先 `<workspace>/memory/today.md`（追加当日记录）→ 再 `<workspace>/MEMORY.md`（合并/修正长期记忆）→ 再 `~/self-improving/`（如存在）→ 再 `.learnings/`（如存在）→ 最后检查其他文件。
 
 > ⚠️ **修改前必做路径确认**：写文件前，在内部清单中明确标注完整路径。`MEMORY.md` = workspace 长期记忆；`~/self-improving/memory.md` = self-improving HOT 规则。搞混了就是 bug。
 
@@ -150,6 +177,14 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 - `index.md` 统计不准确 → 更新行数
 - 重复条目 → 保留在职责更匹配的系统，另一边删除或交叉引用
 
+**.learnings/ 维护**（如已安装）：
+
+- status=pending 但已解决 → 标记为 resolved，添加 Resolution 块
+- Recurrence-Count ≥ 3 且跨 2+ 任务 → 晋升到对应的 workspace 文件（CLAUDE.md / AGENTS.md / TOOLS.md / SOUL.md），原条目标记为 promoted
+- 重复条目（同 Pattern-Key 或相似 Summary）→ 合并为一条，更新 Recurrence-Count 和 See Also
+- `.learnings/ERRORS.md` 中超过 30 天的 pending 条目 → 确认是否仍相关，不相关标 wont_fix
+- 与 `~/self-improving/corrections.md` 重复 → 保留在更合适的一边，另一边加交叉引用
+
 ### 第四步：自检清单（必须逐项过一遍）
 
 - [ ] 第一步列出的每个文件，都判断了"不用改"或"已改"
@@ -161,8 +196,10 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 - [ ] task-summary 文件已按年龄策略处理
 - [ ] 无重复条目
 - [ ] **self-improving 已检测**：存在则已审查，不存在则标记"未安装，跳过"
-- [ ] **两系统无矛盾**：MEMORY.md 与 self-improving/memory.md 无冲突描述
+- [ ] **.learnings/ 已检测**：存在则已审查，不存在则标记"未安装，跳过"
+- [ ] **三系统无矛盾**：MEMORY.md、self-improving/memory.md、.learnings/LEARNINGS.md 无冲突描述
 - [ ] **self-improving 索引准确**：index.md 行数与实际一致
+- [ ] **.learnings/ 无积压**：无长期 pending 未处理条目，应晋升的已晋升
 
 哪条打不了勾，**回去补**。
 
@@ -186,6 +223,13 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 - corrections.md — xxx
 - index.md — 行数更新
 - 去重：xxx（保留在 xxx，从 xxx 删除）
+
+### .learnings/ 变更
+- LEARNINGS.md — resolved: x 条, promoted: x 条, 合并: x 条
+- ERRORS.md — resolved: x 条, wont_fix: x 条
+- FEATURE_REQUESTS.md — xxx
+- 晋升目标：xxx → AGENTS.md / TOOLS.md / SOUL.md
+- 与 self-improving 去重：xxx
 
 ### LCM 覆写
 - ⚠️ LCM 摘要中"xxx"已过期，已在 MEMORY.md 中覆写为"yyy"
@@ -212,14 +256,20 @@ Agent 的知识分布在两套并行系统中，neat-freak 要统一审查：
 
 **self-improving 未安装**：在变更摘要中标记"self-improving 未安装，跳过"，不报错。
 
+**.learnings/ 未安装**：在变更摘要中标记".learnings/ 未安装，跳过"，不报错。
+
 **self-improving 与 MEMORY.md 有重复**：判断职责归属——规则/偏好归 self-improving，事实/决策归 MEMORY.md。两边的描述都保留时确保措辞一致。
+
+**.learnings/ 与 self-improving 有重复**：`corrections.md` 偏行为纠错规则，`LEARNINGS.md` 偏开发经验日志。同一条经验在两边都有时，判断归属：
+- 行为规则/偏好 → 保留在 self-improving，LEARNINGS.md 中标 See Also
+- 开发经验/技术坑 → 保留在 LEARNINGS.md，corrections.md 中标交叉引用
 
 ## 定期执行
 
 建议通过 cron 设置每周日 09:00 自动执行全量审查：
 
 ```
-cron → isolated agentTurn → "执行 /neat 全量审查：盘点 workspace 所有知识文件，检测 ~/self-improving/ 是否存在并审查，检查过期/矛盾/相对时间，输出审查报告。如发现需修改项，执行修改并输出变更摘要。"
+cron → isolated agentTurn → "执行 /neat 全量审查：盘点 workspace 所有知识文件，检测 ~/self-improving/ 和 .learnings/ 是否存在并审查，检查过期/矛盾/相对时间，输出审查报告。如发现需修改项，执行修改并输出变更摘要。"
 ```
 
 这样即使忘记手动触发，知识体系也不会持续腐化。
