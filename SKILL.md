@@ -1,5 +1,5 @@
 ---
-name: neat-freak
+name: neat-freak-qclaw
 description: >
   会话收尾知识审查 — 审查并同步 Agent 的知识体系（MEMORY.md、daily notes、
   AGENTS.md、USER.md、task-summary、LCM summaries、self-improving、.learnings/），
