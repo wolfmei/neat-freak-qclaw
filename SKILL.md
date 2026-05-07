@@ -51,11 +51,18 @@ description: >
 
 查 [references/sync-matrix.md](references/sync-matrix.md) 确定"对话发生了什么 → 要改哪些文件"。
 
-**关键检查**：
+**关键检查**（逐项过，不能跳）：
 
-1. **LCM**：compacted summary 与当前认知矛盾？→ MEMORY.md 写覆写条目
-2. **self-improving 交叉**：HOT 规则 vs MEMORY.md 教训有无重复？→ 保留职责更匹配的一边；corrections.md 已 FIXED 的结论是否已在 MEMORY.md？→ 补上；index.md 行数准不准？→ 更新；memory.md 超 100 行？→ 降频
-3. **.learnings/ 交叉**：pending 但已解决？→ resolved；Recurrence-Count ≥ 3？→ 晋升；与 corrections.md 重复？→ 保留更合适的一边
+1. **LCM**：`lcm_grep` 搜索本次对话关键实体，compacted summary 与当前认知矛盾？→ MEMORY.md 写覆写条目
+2. **self-improving 交叉**：
+   - `memory.md` HOT 规则 vs `MEMORY.md` 教训条目 → 重复则保留更合适的一边
+   - `corrections.md` 已 FIXED 条目 → 精炼结论是否已在 `MEMORY.md`？没有→补上
+   - `index.md` 行数 → 与实际一致？不一致→更新
+   - `memory.md` 超 100 行 → 按降频规则处理
+3. **.learnings/ 交叉**：
+   - `LEARNINGS.md` status=pending → 对话中已解决？→ 标 resolved
+   - Recurrence-Count ≥ 3 → 应晋升到 workspace 文件
+   - 与 `corrections.md` 重复 → 保留更合适的一边
 4. **三系统一致性**：同一信息多处描述不同 → 以更近更新为准
 
 去重判断规则详见 [references/sync-matrix.md](references/sync-matrix.md)。
@@ -102,6 +109,8 @@ description: >
 
 ### 第五步：变更摘要
 
+输出修改汇总。**有 ⚠️ 标记的删除/大改项，等用户确认后再执行**。格式：
+
 ```
 ## 🧹 同步完成
 
@@ -111,9 +120,14 @@ description: >
 ### self-improving 变更 / .learnings/ 变更 / LCM 覆写 / task-summary 清理
 - （只列有实际变更的，没改不写）
 
+### ⚠️ 待确认
+- [ ] 删除：xxx（原因） — 等用户确认
+
 ### 未处理
 - xxx（为什么没处理）
 ```
+
+无待确认项时省略 ⚠️ 节。用户说"直接改"则无需等确认。
 
 ## 特殊情况
 
